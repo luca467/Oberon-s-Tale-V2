@@ -12,12 +12,12 @@ int main(){
   int b=0;
   do{
 
-    printf("     *  *    *   *  /////////////////////////////////////////////////////////////////    *   *   *     * \n");		
-    printf("   *     *      *   ///----------------MAGO OBERON CALZINO BUCATO-----------------\\\      *  *     *    \n");
-    printf("  *     *     *   * ///In questo gioco si dovrà condurre il Mago Oberon attraverso\\\   *     *     *    \n");
-    printf("     *     *     *  ///varie terre, con lo scopo di farlo arrivare sano e salvo a \\\    *      *        \n");
-    printf(" *      *     *     ///casa.                                                      \\\      *   *     *   \n");
-    printf("    *     *      *  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\    *    *   *      \n");
+    printf("     *  *    *   *  |///////////////////////////////////////////////////////////////|    *   *   *     * \n");		
+    printf("   *     *      *   |//----------------MAGO OBERON CALZINO BUCATO-----------------\\|      *  *     *    \n");
+    printf("  *     *     *   * |//In questo gioco si dovrà condurre il Mago Oberon attraverso\\|   *     *     *    \n");
+    printf("     *     *     *  |//varie terre, con lo scopo di farlo arrivare sano e salvo a \\|    *      *        \n");
+    printf(" *      *     *     |//casa.                                                      \\|      *   *     *   \n");
+    printf("    *     *      *  |\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\|    *    *   *      \n");
     printf("\n");
     printf(" _________________________________________________\n");
     printf("|                                                 |\n");
