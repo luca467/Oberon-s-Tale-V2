@@ -170,16 +170,71 @@ void stampa_percorso(){
   struct Terra *pp = head;
   
   if(pp == NULL){
-    printf("Non c'è nessuna terra in memoria.\n");
+    printf("Non hai creato nessuna Terra\n");
   }
   
   else{
+	c=1;
     do{
-      printf("\n%d, %d, %hd\n\n", pp->Tipo_terra, pp->Tipo_mostro, pp->tesoro);
-      pp = pp->next;
+	
+	printf("La terra n %d è" &c);
+	
+	switch(pp->Tipo_terra){
+
+	case 0:{
+		printf(" un deserto");
+		break;}
+
+	case 1:{
+		printf(" una foresta");
+		break;}
+
+	case 2:{
+		printf(" una palude");
+		break;}
+
+	case 3:{
+		printf(" un villaggio");
+		break;}
+
+	case 4:{
+		printf(" una pianura");
+		break;}
+	}
+
+
+	switch(pp->Tipo_mostro){
+
+	case 0:{
+		printf(" in cui non è presente nessun mostro.");
+		break;}
+
+	case 1:{
+		printf(" in cui è presente un ostile scheletro.");
+		break;}
+
+	case 2:{
+		printf(" dove girovaga un lupo affamato.");
+		break;}
+
+	case 3:{
+		printf(" dove abita un possente orco.");
+		break;}
+
+	case 4:{
+		printf(" dove riposa un 'amichevole' drago.");
+		break;}
+	}
+
+	printf("\n Questa Terra contiene %hd monete d'oro.\n", &pp->tesoro); 
+
+      	pp = pp->next;
+	c++;
+
     }while(pp != NULL);
   } 
 }
+
 
 void termina_gioco(){
   while(head!=NULL){
