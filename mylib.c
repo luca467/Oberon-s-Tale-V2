@@ -143,18 +143,18 @@ void ins_terra(){
 }
 
 void canc_terra(){
-	
+  
   if(head == NULL){
-    printf("Non hai inserito ancora nessuna Terra.\n");
+    printf("Non c'è nessuna terra in memoria.\n");
   }
   
-  if(head->next == NULL){
+  else if(head->next == NULL){
     free(head);
+    head=NULL;
   }
 
   else{
     struct Terra *current = head;
-	
     while(current->next->next != NULL){ //arriva in fondo alla lista
       current = current->next;
     }
@@ -170,7 +170,7 @@ void stampa_percorso(){
   struct Terra *pp = head;
   
   if(pp == NULL){
-    printf("Non hai creato nessuna Terra\n");
+    printf("Non c'è nessuna terra in memoria.\n");
   }
   
   else{
@@ -182,15 +182,20 @@ void stampa_percorso(){
 }
 
 void termina_gioco(){
-  
-  struct Terra *current = head;
-  
-  if(current!=NULL){
-    do{
-      //free(head);
-      current = current->next;
-      printf("canc\n");
-    }while(current != NULL);
+  while(head!=NULL){
+    if(head->next == NULL){
+      free(head);
+      head=NULL;
+    }
+    
+    else{
+      struct Terra *current = head;
+      while(current->next->next != NULL){ //arriva in fondo alla lista
+	current = current->next;
+      }
+      
+      free(current->next);
+      current->next = NULL;
+    }
   }
-  
 }
