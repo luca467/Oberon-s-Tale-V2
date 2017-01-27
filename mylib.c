@@ -5,7 +5,10 @@
 #include "mylib.h"
 
 static struct Terra *head = NULL;
+
 static struct Terra *lastland = NULL;
+
+static int w=0;
 
 void crea_percorso(){
   int t,x=0;
@@ -15,7 +18,8 @@ void crea_percorso(){
     printf("1)Inserisci Terra\n");
     printf("2)Cancella Terra\n");
     printf("3)Stampa Percorso\n");
-    printf("4)Torna indietro\n");
+    printf("4)Chiudi Percorso\n");
+    printf("5)Torna indietro\n");
 
     scanf("%d", &t);
 
@@ -37,6 +41,12 @@ void crea_percorso(){
       }
 
       case 4:{
+	w=1;
+	printf("Il percorso è stato chiuso. Ora Oberon può giocare.\n");
+	break;
+      }
+
+      case 5:{
 	x++;
 	break;
       }
@@ -91,7 +101,7 @@ void ins_terra(){
 	else if(tm==3 && tt==0){
 	  printf("L'orco non può stare su un deserto\n");
 	}
-	else if((tm==2 && tt!=1)||(tm==2 && tt!=4)){
+	else if((tm==2 && tt!=1)&&(tm==2 && tt!=4)){
 	  printf("Il lupo può stare solo sulla foresta o sulla pianura\n");
 	}
 	else{
@@ -168,16 +178,19 @@ void canc_terra(){
 void stampa_percorso(){
 	
   struct Terra *pp = head;
+ 
+ 
   
   if(pp == NULL){
     printf("Non hai creato nessuna Terra\n");
   }
   
   else{
-	c=1;
-    do{
 	
-	printf("La terra n %d è" &c);
+    do{
+	int c=1;
+
+	printf("La terra n %d è", &c);
 	
 	switch(pp->Tipo_terra){
 
