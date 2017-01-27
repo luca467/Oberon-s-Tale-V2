@@ -62,8 +62,11 @@ void crea_percorso(){
 void ins_terra(){
 	
   int tt, tm,x=0;
-  short int ts;		
-				
+  short int ts;	
+
+	
+  if(w==0){
+	       		
   do{
     printf("Che Terra vuoi inserire?\n");
     printf("0)Deserto\n");
@@ -72,6 +75,7 @@ void ins_terra(){
     printf("3)Villaggio\n");
     printf("4)Pianura\n");
     scanf("%d", &tt);
+    
     if(tt>4){
       printf("Hai sbagliato comando\n");
     }
@@ -140,7 +144,7 @@ void ins_terra(){
     head->next = NULL;
   }
   else{	
-    struct Terra *lastland = head;
+    lastland = head;
     while(lastland->next != NULL){
       lastland = lastland ->next;
     }
@@ -150,9 +154,20 @@ void ins_terra(){
     lastland->next->tesoro = ts;
     lastland->next->next = NULL;
   }
+	lastland=NULL;
+ } 
+
+else{
+
+	printf("Il percorso è stato chiuso, non puoi aggiungere altre terre.\n");
+ }
 }
 
+
+
 void canc_terra(){
+
+	if(w==0){
   
   if(head == NULL){
     printf("Non c'è nessuna terra in memoria.\n");
@@ -172,6 +187,11 @@ void canc_terra(){
     free(current->next);
     current->next = NULL;
   }
+ } 
+  else{
+		
+	printf("Il percorso è stato chiuso, non puoi cancellare terre.\n");
+ }
 }
 
 
@@ -190,7 +210,7 @@ void stampa_percorso(){
     do{
 	int c=1;
 
-	printf("La terra n %d è", &c);
+	printf("La terra n %d è", c);
 	
 	switch(pp->Tipo_terra){
 
@@ -239,7 +259,7 @@ void stampa_percorso(){
 		break;}
 	}
 
-	printf("\n Questa Terra contiene %hd monete d'oro.\n", &pp->tesoro); 
+	printf("\n Questa Terra contiene %hd monete d'oro.\n", pp->tesoro); 
 
       	pp = pp->next;
 	c++;
