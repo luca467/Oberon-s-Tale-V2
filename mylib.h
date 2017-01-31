@@ -5,6 +5,12 @@ void ins_terra();
 void canc_terra();
 void stampa_percorso();
 void termina_gioco();
+void muovi_Oberon();
+void avanza();
+void combatti();
+void usa_pozione();
+void prendi_tesoro();
+//void distruggi_terra();
 
 //Definisco la struttura per il personaggio Oberon
 struct Oberon {
@@ -30,6 +36,7 @@ enum Tipo_mostro {
   drago
 };
 
+
 //Definisco la struttura per le terre
 struct Terra {
   int Tipo_terra;
@@ -37,5 +44,3 @@ struct Terra {
   short tesoro;
   struct Terra* next;
 };
-
-	

@@ -41,7 +41,7 @@ int main(){
 	printf(" _____________________________________________________________________________________________________\n");
 	printf("|TUTORIAL                                                                                             |\n");
 	printf("|Oberon's Tale è un gioco pensato per due giocatori.                                                  |\n");
-	printf("|Uno di voi interpreterà il Master, la ' mente malvagia' che dovrà creare un percorso                 |\n");
+	printf("|Uno di voi interpreterà il Master, la 'mente malvagia' che dovrà creare un percorso                  |\n");
 	printf("|decidendo il tipo di terre da attraversare, i mostri da dover affrontare (inclusi                    |\n");
 	printf("|orrendi orchi, famelici lupi e un classico drago sputafuoco), e la ricompensa per                    |\n");
 	printf("|averli sopraffatti. Il Master deve tenere in considerazione che la prima terra non                   |\n");
@@ -56,10 +56,10 @@ int main(){
 	printf("|Combattere non è obbligatorio, a meno di che non si tratti di un drago, ma in ogni caso se non       |\n");
 	printf("|si sconfigge il mostro non si potrà accedere al tesoro che protegge.                                 |\n");
 	printf("|                                                                                                     |\n");
-	printf("|Buona Viaggio, Oberon! Non ti fermerà nessuno, se non la cara vecchia morte!                         |\n");
+	printf("|Buon Viaggio, Oberon! Non ti fermerà nessuno, se non la cara vecchia morte!                          |\n");
 	printf("|_____________________________________________________________________________________________________|\n");
 	printf("\n");
-
+	
 	continue;
       }
       
@@ -69,7 +69,7 @@ int main(){
       }
       
       case 3:{
-        printf("Appena implementerò la funzione, muoverai Oberon.\n");
+        muovi_Oberon();
         break;
       }
       
@@ -88,23 +88,3 @@ int main(){
   
   return 0;
 }
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

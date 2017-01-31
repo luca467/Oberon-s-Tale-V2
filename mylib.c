@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include <ctype.h>
 #include "mylib.h"
+#include <time.h>
 
 static struct Terra *head = NULL;
 static struct Terra *lastland = NULL;
-static struct Terra *px = head; //puntatore per muovere Oberon
-
+static struct Terra *px = NULL;
 static int w=0;
+static struct Oberon Oberon = {10, 5, 2, 1};  //Definisci Oberon con il tipo struttura Oberon
 
 void crea_percorso(){
   int t,x=0;
@@ -22,7 +23,7 @@ void crea_percorso(){
     printf("5)Torna indietro\n");
 
     scanf("%d", &t);
-    
+
     switch (t){
 
       case 1:{
@@ -42,7 +43,7 @@ void crea_percorso(){
 
       case 4:{
 	w=1;
-	printf("Il percorso è stato chiuso. Ora Oberon può muoversi.\n");
+	printf("Il percorso è stato chiuso. Ora Oberon può giocare.\n");
 	break;
       }
 
@@ -62,8 +63,11 @@ void crea_percorso(){
 void ins_terra(){
 	
   int tt, tm,x=0;
-  short int ts;		
-				
+  short int ts;	
+
+	
+  if(w==0){
+	       		
   do{
     printf("Che Terra vuoi inserire?\n");
     printf("0)Deserto\n");
@@ -72,6 +76,7 @@ void ins_terra(){
     printf("3)Villaggio\n");
     printf("4)Pianura\n");
     scanf("%d", &tt);
+    
     if(tt>4){
       printf("Hai sbagliato comando\n");
     }
@@ -140,7 +145,7 @@ void ins_terra(){
     head->next = NULL;
   }
   else{	
-    struct Terra *lastland = head;
+    lastland = head;
     while(lastland->next != NULL){
       lastland = lastland ->next;
     }
@@ -150,9 +155,20 @@ void ins_terra(){
     lastland->next->tesoro = ts;
     lastland->next->next = NULL;
   }
+	lastland=NULL;
+ } 
+
+else{
+
+	printf("Il percorso è stato chiuso, non puoi aggiungere altre terre.\n");
+ }
 }
 
+
+
 void canc_terra(){
+
+	if(w==0){
   
   if(head == NULL){
     printf("Non c'è nessuna terra in memoria.\n");
@@ -172,23 +188,31 @@ void canc_terra(){
     free(current->next);
     current->next = NULL;
   }
+ } 
+  else{
+		
+	printf("Il percorso è stato chiuso, non puoi cancellare terre.\n");
+ }
 }
 
 
 void stampa_percorso(){
 	
   struct Terra *pp = head;
-   
+ 
+ 
+  
   if(pp == NULL){
     printf("Non hai creato nessuna Terra\n");
   }
   
   else{
 	
-    do{
 	int c=1;
 
-	printf("La terra n %d è", &c);
+    do{
+
+	printf("La terra n %d è", c);
 	
 	switch(pp->Tipo_terra){
 
@@ -237,7 +261,7 @@ void stampa_percorso(){
 		break;}
 	}
 
-	printf("\n Questa Terra contiene %hd monete d'oro.\n", &pp->tesoro); 
+	printf("\n Questa Terra contiene %hd monete d'oro.\n", pp->tesoro); 
 
       	pp = pp->next;
 	c++;
@@ -264,12 +288,16 @@ void termina_gioco(){
       current->next = NULL;
     }
   }
+}
 
 void muovi_Oberon(){
 	
+	static int c=0;
+	if(c==0){
+		px = head;
+		++c;}
+	
 	//inserire il controllo se il percorso è stato chiuso
-
-	struct Oberon Oberon {10, 5, 2, 1};  //Definisci Oberon con il tipo struttura Oberon
 
 	//stampa su schermo il tipo di terra e il mostro che contiene
 	printf("Ti trovi");
@@ -301,28 +329,28 @@ void muovi_Oberon(){
 	switch(px->Tipo_mostro){
 
 	case 0:{
-		printf(" in cui non è presente nessun mostro.");
+		printf(" in cui non è presente nessun mostro.\n");
 		break;}
 
 	case 1:{
-		printf(" dove uno scheletro ti guarda in modo ostile.");
+		printf(" dove uno scheletro ti guarda in modo ostile.\n");
 		break;}
 
 	case 2:{
-		printf(" dove un famelico lupo sta cacciando.");
+		printf(" dove un famelico lupo sta cacciando.\n");
 		break;}
 
 	case 3:{
-		printf(" in cui un possente orco è a guardia della sua casa.");
+		printf(" in cui un possente orco è a guardia della sua casa.\n");
 		break;}
 
 	case 4:{
-		printf(" dove un drago custodisce il suo tesoro.");
+		printf(" dove un drago custodisce il suo tesoro.\n");
 		break;}
 	}
 
-	printf("Che cosa vuoi fare?");
-	printf("1) Avanza 2) Combatti 3) Usa una pozione 4) Prendi tesoro 5) Distruggi Terra");
+	printf("Che cosa vuoi fare?\n");
+	printf("1) Avanza 2) Combatti 3) Usa una pozione 4) Prendi tesoro 5) Distruggi Terra\n");
 	int a, g;
 	scanf("%d", &a);
 	
@@ -345,7 +373,8 @@ void muovi_Oberon(){
 		break;}
 
 	case 5:{
-		distruggi_terra();
+		//distruggi_terra();
+		printf("scocciaterra.\n");
 		break;}
 
 	default:{ 
@@ -353,24 +382,34 @@ void muovi_Oberon(){
 		g=1;
 		break;}
 	}
-	}while(g==1)
+	}while(g==1);
 		
 }
 
 void avanza(){
-	//controlli, se mostro drago e non è stato sconfitto, se è l'ultima terra
+	
+	if(px->Tipo_mostro==4){
+	
+	printf("Non puoi sfuggire a un drago!\n");
+	
+	muovi_Oberon();}
+		
+	if(px->next==NULL){
+	
+	printf("Hai vinto! Incredibile, non me lo sarei mai aspettato da te.\n");}
+
 	px = px->next;
-	muovi_oberon();}
+	muovi_Oberon();}
 
 void combatti(){
 	
+	int atk, atkm, pf; //Variabili per attacco di Oberon, attacco del Mostro, punti ferita del mostro
+
 	if(px->Tipo_mostro == 0){
 		printf("Non c'è nessun mostro da combattere\n");
 		}
 	
 	else{
-
-	int atk, atkm, pf; //Variabili per attacco di Oberon, attacco del Mostro, punti ferita del mostro
 
 	switch(px->Tipo_mostro){               //determina i punti ferita del mostro
 	
@@ -390,9 +429,10 @@ void combatti(){
 		pf=5;
 		break;}
 	}
+	}
 
 	time_t t;
-	srand((unsigned) time(&t));
+	srand((unsigned)time(&t));
 	
 	atk = rand()%100;
 
@@ -400,10 +440,10 @@ void combatti(){
 		pf-=3;
 	          }
 
-	if(pv<=0){
+	if(pf<=0){
 		printf("Hai sconfitto il mostro.\n");
-		pf->tm = 0;
-		muovi_oberon();
+		px->Tipo_mostro = 0;
+		muovi_Oberon();
 	        }
 
 	atkm = rand()%100;
@@ -427,7 +467,7 @@ void combatti(){
 	
 		case 1:{
 			px = head;
-			Muovi_Oberon();
+			muovi_Oberon();
 			break;}
 
 		case 2:{
@@ -436,9 +476,9 @@ void combatti(){
 
 		default:{
 			printf("Hai inserito un comando sbagliato.\n");
-			t=0}
-		
-		}while(t==0)
+			t=0;}
+		}		
+		}while(t==0);
 		}
 
 	muovi_Oberon();
@@ -454,7 +494,7 @@ void usa_pozione(){
 	else{
 		printf("Non hai più pozioni da usare.\n");}
 
-	muovi_Oberon;
+	muovi_Oberon();
 	}
 
 void prendi_tesoro(){
@@ -468,5 +508,6 @@ void prendi_tesoro(){
 	else{
 		printf("Hai già raccolto il tesoro presente in questa terra.\n");}
 
-	muovi_Oberon();}
+	muovi_Oberon();
+	}
 		 
