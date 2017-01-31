@@ -1,477 +1,472 @@
-//Progetto di AZZARELLI MATTEO
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+#include <time.h>
 #include "mylib.h"
 
-	//Prototipi delle funzioni Static
-	static sBookList* getPBookList();
-	static void freeSCell(sCell *pCell);
-	static eGenre selectGenere();
-	static sDate* inizializeDate();
-	static sBook* initializeBook();
-	static sCell* initializeCell(sCell *pCellPrev, sCell *pCellNext);
-	static void printGenre(sCell *pAppoggio);
-	static void printDate(sCell *pAppoggio);
-	static void rmvElemByAdr(sCell *rmvCell);
-	static void printElemByAdr(sCell *pAppoggio);
-	static void swapBook(sCell *p1Appoggio, sCell *p2Appoggio);
-	void stringToLowerCase(char *s, char *appoggio);
+static struct Terra *head = NULL;
+static struct Terra *lastland = NULL;
+static struct Terra *px = head; //puntatore per muovere Oberon
 
-	//-----------------------------
-	//|----- STATIC FUNCTION -----|
-	//-----------------------------
-	static sBookList *bookList = NULL;
+static int w=0;
+
+void crea_percorso(){
+  int t,x=0;
 	
-	/*	Funzione che restituisce l'indirizzo di memoria della struttura bookList
-	 *	Utilizzo la tecnica del Singleton per far si che ogni utilizzo della bookList venga richiamata
-	 *	tramite questa funzione.
-	 *	Quindi se la variabile *booklist è già allocata, la funzione restituisce l'indirizzo di memoria corrispondente
-	 *	altrimenti cerca di allocare memoria per la bookList, se non dovesse riuscirci il programma termina
-	 */
-	static sBookList* getPBookList(){
-		if(bookList == NULL){	//controllo se booklist e' inizializzata
-			bookList = calloc(1 , sizeof(sBookList));	//alloco memoria per bookList e 
-														//tramite calloc inizializza tutti i valori a 0(NULL)
-			if(bookList == NULL){	//controllo se booklist e' stata inizializzata correttamente dalla calloc, se ha fallito sttampo a video un errore e termina il programma
-				puts("Errore, allocazione di memoria non riuscita\n");
-				exit(EXIT_FAILURE);		//Dato che la memoria per la bookList non è stata allocata, cio' provocherebbe un errore irreversibile nell'esecuzione delle funzioni, quindi termino il programma.
-			}
-		}
-		return bookList;	//Ritorna il puntatore alla varialile booklist
-	}
+  do{
+    printf("Cosa vuoi fare?\n");      
+    printf("1)Inserisci Terra\n");
+    printf("2)Cancella Terra\n");
+    printf("3)Stampa Percorso\n");
+    printf("4)Chiudi Percorso\n");
+    printf("5)Torna indietro\n");
+
+    scanf("%d", &t);
+    
+    switch (t){
+
+      case 1:{
+	ins_terra();
+	break;
+      }
+
+      case 2:{
+        canc_terra();
+        break;
+      }
+
+      case 3:{
+	stampa_percorso();
+	break;
+      }
+
+      case 4:{
+	w=1;
+	printf("Il percorso è stato chiuso. Ora Oberon può muoversi.\n");
+	break;
+      }
+
+      case 5:{
+	x++;
+	break;
+      }
+
+      default:{
+        printf("Hai inserito un comando sbagliato .-.\n");
+        break;
+      }
+    };
+  }while(x==0);
+}
+
+void ins_terra(){
 	
-	//funzione per liberare la memoria di una data cella della lista tramite l'indirizzo di memoria di quest'ultima
-	static void freeSCell(sCell *pCell){
-		free(pCell->book->date);	//libero la memoria della struttura date
-		free(pCell->book);	//libero la memoria della struttura book
-		free(pCell);	//libero la memoria della cella
-	}
-	
-	//selezione del genere del libro
-	static eGenre selectGenere(){
-		int genere;
-		do{	
-			puts("Scegli il genere del libro\n\t0 - thriller\n\t1 - novel\n\t2 - fantasy");
-			scanf("%d", &genere);
-		}while(genere <=-1 || genere >= 3 );	//controllo che la selezione dell'utente sia coerente con le possibilità date
-		return genere;
-	}
-	
-	//alloco memoria per la struttura date e richiede l'inserimento dei valori
-	static sDate* inizializeDate(){
-		sDate *pSDate = malloc(sizeof(sDate));	//alloco memoria per la struttura sDate
-		if(pSDate != NULL){	//controllo se la struttura dati è stata allocata correttamente
-			int bisestile = 0;	//variabile di controllo per l'anno bisestile
-			puts("Inserisci la data di pubblicazione del libro");
-			puts("Inserisci l'anno");
-			scanf("%hd", &(pSDate->year));
-			bisestile = pSDate->year%4==0 && (pSDate->year % 400 == 0 || pSDate->year % 100 !=0);	//Verifica anno bisestile(Un anno è bisestile se il suo numero è divisibile per 4, con l'eccezione degli anni secolari (quelli divisibili per 100) che non sono divisibili per 400.)
-			do{
-				puts("Inserisci il mese");
-				scanf("%hu", &(pSDate->month));
-			}while(!(pSDate->month >= 1 && pSDate->month <= 12));	//controllo che la selezione del mese sia appropriata
-			do{
-				puts("Inserisci il giorno");
-				scanf("%hu", &(pSDate->day));
-			}while(!(pSDate->day >= 1 && ((pSDate->month == 2 && pSDate->day <= (!bisestile ? 28 : 29)) || ((pSDate->month == 4 || pSDate->month == 6 || pSDate->month == 9 || pSDate->month == 11) && pSDate->day <= 30) || ((pSDate->month == 1 || pSDate->month == 3 || pSDate->month == 5 || pSDate->month == 7 || pSDate->month == 8 || pSDate->month == 10 || pSDate->month == 12) && pSDate->day <= 31))));	//controllo sui giorni dei vari mesi
-		}else{	//se l'allocazione di memoria fallisce, restituisce un errore e termina il programma
-			puts("Errore, allocazione di memoria non riuscita\n");
-			exit(EXIT_FAILURE);		//Dato che la memoria per la bookList non è stata allocata, cio' provocherebbe un errore irreversibile nell'esecuzione delle funzioni, quindi termino il programma.
-		}
-		return pSDate;
-	}
-	
-	//alloco memoria per la struttura sBook e faccio inserire i dati
-	static sBook* initializeBook(){
-		sBook *pSBook = malloc(sizeof(sBook));	//alloco memoria per la struttura sBook
-		if(pSBook != NULL){	//controllo se ha allocato correttamente la memoria
-			puts("Inserisci il titolo del libro");
-			scanf("\n%63[^\n]%*[^\n]", pSBook->title);
-			puts("Inserisci il nome e cognome dell'autore");
-			scanf("\n%31[^\n]%*[^\n]", pSBook->writer);
-			//controllo che la scelta effettuata dall'utente sia corretta
-			int genere = selectGenere();
-			switch(genere){
-				case thriller:
-					pSBook->genre = thriller;
-					break;
-				case novel:
-					pSBook->genre = novel;
-					break;
-				case fantasy:
-					pSBook->genre = fantasy;
-					break;
-			}
-			pSBook->date = inizializeDate();
-			puts("Inserisci il numero di copie presenti in biblioteca");
-			scanf("%hd", &(pSBook->inLibrary));
-			pSBook->outLibrary = 0;
-			do{
-				puts("Inserisci l'ID del libro");
-				scanf("%hu", &(pSBook->id));
-			}while(searchId(pSBook->id));
-			puts("\n\tINSERIMENTO COMPLETATO\n\n");
-			return pSBook;
-		}else{
-			puts("Errore, allocazione di memoria non riuscita\n");
-			exit(EXIT_FAILURE);		//Dato che la memoria per la bookList non è stata allocata, cio' provocherebbe un errore irreversibile nell'esecuzione delle funzioni, quindi termino il programma.
-		}
-	}
-
-	//passare l'indirizzo di memoria della cella successiva inserire null se è l'ultimo elemento della lista
-	static sCell* initializeCell(sCell *pCellPrev, sCell *pCellNext){
-		sCell *pSCell = malloc(sizeof(sCell));	//alloco memoria per la sCell
-		if(pSCell != NULL){
-			pSCell->pPrev = pCellPrev;	//associo il puntatore al precedente
-			pSCell->pNext = pCellNext;	//associo il puntatore al successivo
-			pSCell->book = initializeBook();	//associo il puntatore alla struttura book che è restituito dalla funzione chiamata
-			return pSCell;
-		}else{
-			puts("Errore, allocazione di memoria non riuscita\n");
-			exit(EXIT_FAILURE);		//Dato che la memoria per la bookList non è stata allocata, cio' provocherebbe un errore irreversibile nell'esecuzione delle funzioni, quindi termino il programma.
-		}
-	}
-
-	//Stampa a video il genere di un libro dato come parametro l'indirizzo di memoria del libro
-	static void printGenre(sCell *pAppoggio){
-		switch((pAppoggio->book)->genre){
-			case thriller:
-				puts("Genere: thriller");
-				break;
-			case novel:
-				puts("Genere: novel");
-				break;
-			case fantasy:
-				puts("Genere: fantasy");
-				break;
-		};
-	}
-	
-	//Stampa a video la data di pubblicazione del libro dato come parametro l'indirizzo di memoria del libro
-	static void printDate(sCell *pAppoggio){
-		printf("Anno: %u - mese: %hu - giorno: %hu\n", ((pAppoggio->book)->date)->year, ((pAppoggio->book)->date)->month, ((pAppoggio->book)->date)->day);
-	}
-
-	//rimuovi un elemento passatogli come parametno l'indirizzo di memoria dell'elemento
-	static void rmvElemByAdr(sCell *rmvCell){
-		if(getPBookList()->pFirst == rmvCell)
-			rmvHead();
-		else if(getPBookList()->pLast == rmvCell)
-			rmvTail();
-		else{
-			(rmvCell->pPrev)->pNext = rmvCell->pNext;
-			(rmvCell->pNext)->pPrev = rmvCell->pPrev;
-			freeSCell(rmvCell);
-			puts("--RIMOZIONE AVVENUTA CON SUCCESSO--\n");
-		}
-	}
-	
-	/**	Funzione di utilità:
-	 *	Stampa tutti i campi di un Elemento tramite l'indirizzo della cella
-	**/
-	static void printElemByAdr(sCell *pAppoggio){
-		if(pAppoggio != NULL){
-			//printf("LOCAZIONI MEMORIA:\n\tPrecedente: %p\n\tCorrente: %p\n\tSuccessivo: %p\n", pAppoggio->pPrev, pAppoggio, pAppoggio->pNext);	//utilità per debug
-			printf("Id Libro: %hu\n",(pAppoggio->book)->id);
-			printf("Titolo: %s\n",(pAppoggio->book)->title);
-			printf("Scrittore: %s\n",(pAppoggio->book)->writer);
-			printGenre(pAppoggio);
-			printDate(pAppoggio);
-			printf("Libri in Biblioteca: %hu\n",(pAppoggio->book)->inLibrary);
-			printf("Libri prestati Biblioteca: %hu\n\n",(pAppoggio->book)->outLibrary);
-			puts("Operazione eseguita con successo\n\n");
-		}else
-			puts("Non ci sono libri con questo ID\n");
-	}
-	
-	//scambia i puntatori ai rispettivi book delle due celle passate come parametro, funzione di utilità
-	static void swapBook(sCell *p1Appoggio, sCell *p2Appoggio){
-		sBook *pAppoggio;
-		pAppoggio = p1Appoggio->book;
-		p1Appoggio->book = p2Appoggio->book;
-		p2Appoggio->book = pAppoggio;
-	}
-	
-	//Funzione che serve per trasformare una stringa in miniscolo passatogli come parametri la stringa e l'indirizzo di memoria della stringa di appoggio
-	void stringToLowerCase(char *s, char *appoggio){
-		int conta;
-		for(conta = 0; conta < strlen(s); conta++){	//scorro tutta la stringa s
-			appoggio[conta] = tolower(s[conta]);	//converto carattere a carattere in minuscolo
-		}
-		appoggio[conta] = '\0';	//aggiungo il carattere di terminazione in fondo alla stringa
-	}
-		
-	//--------------------------
-	//|--- PROGECT FUNCTION ---|
-	//--------------------------
-
-	//Inserimento di un elemento in cima alla lista
-	void insHead(){
-		//printf("-insHead-\n");
-		sCell *pSCell;
-		if(getPBookList()->pLast == NULL){	//controllo se la lista è vuota e inserisco il primo libro
-			pSCell = initializeCell(NULL, NULL);
-			getPBookList()->pLast = pSCell;
-		}else{	//altrimenti inserisco in testa
-			pSCell = initializeCell(NULL, getPBookList()->pFirst);
-			getPBookList()->pFirst->pPrev = pSCell;
-		}
-		getPBookList()->pFirst = pSCell;
-	}
-
-	//Inserimento di un elemento in fondo alla lista
-	void insTail(){
-		//printf("-insTail-\n");
-		if(getPBookList()->pFirst == NULL){	//controllo se la lista è vuota, in tale caso richiamo la funzione insHead che gestisce questo caso
-			insHead();
-		}else{	//altrimenti inserisco in coda
-			(getPBookList()->pLast)->pNext = initializeCell(getPBookList()->pLast, NULL);
-			getPBookList()->pLast = (getPBookList()->pLast)->pNext;
-		}
-	}
-
-	//rimuovi il primo elemento della lista
-	void rmvHead(){
-		//printf("-RemoveHead-\n");
-		if(getPBookList()->pFirst != NULL){	//controllo se la lista è vuota
-			if((getPBookList()->pFirst)->pNext == NULL){	//caso in cui è presente un solo elemento
-				puts("E' l'unico elemento della lista");
-				freeSCell(getPBookList()->pFirst);	//Libero la memoria 
-				bookList->pFirst = NULL;	//imposto i puntatori al primo e all'ultimo a NULL
-				bookList->pLast = NULL;
-				printf("bookList->pFirst: %p - bookList->pLast: %p\n",bookList->pFirst,bookList->pLast);
-			}else{
-				puts("Non è l'unico elemento della lista, quindi aggiorno i puntatori");
-				bookList->pFirst = (getPBookList()->pFirst)->pNext;	//aggiorno il puntatore al primo elemento
-				freeSCell(getPBookList()->pFirst->pPrev);	//Libero la memoria
-				getPBookList()->pFirst->pPrev = NULL;	//aggiorno il puntatore al precedente del nuovo primo elemento
-			}
-			puts("--RIMOZIONE AVVENUTA CON SUCCESSO--\n");
-		}else
-			puts("Errore: Non ci sono elemeti nella lista\n");
-	}
-
-	//rimuovi l'ultimo elemento della lista
-	void rmvTail(){
-		//printf("-RemoveTail-\n");
-		if(getPBookList()->pFirst != NULL){	//controllo se la lista è vuota
-			if(getPBookList()->pFirst->pNext == NULL)	//se è presente un solo elemento nella lista richiamo la funzione rmvHead che gestisce il caso
-				rmvHead();
-			else{
-				getPBookList()->pLast = getPBookList()->pLast->pPrev;	//aggiorno il valore del pLast
-				freeSCell(getPBookList()->pLast->pNext);	//svuoto la memoria
-				(getPBookList()->pLast)->pNext = NULL;		//aggiorno il pNext dell'ultimo elemento a NULL
-				puts("--RIMOZIONE AVVENUTA CON SUCCESSO--\n");
-			}
-		}else
-			puts("Errore: Non ci sono elemeti nella lista\n");
-	}
-
-	/**funzione per cercare un libro tramite l'ID
-	 *	Return:
-	 *	NULL - elemento non trovato
-	 *	indirizzo dell'elemento - elemento trovato
-	**/
-	sCell* getAdrsFromID(unsigned short searchedId){
-		//printf("-getAdrsFromID-\n");
-		sCell *appoggio = (getPBookList()->pFirst);	
-		//scorro tutta la lista finchè non arrivo all'ultimo elemento o non trovo un ID uguale
-		while(appoggio != NULL){
-			if(((appoggio->book)->id) == searchedId){
-				return appoggio;
-			}
-			appoggio = appoggio->pNext;		//scorro la lista
-		}
-		return NULL;
-	}
-
-	void rmvId(unsigned short searchedId){
-		//printf("-RemoveId-\n");
-		if(getPBookList()->pFirst != NULL){
-			sCell *pId = getAdrsFromID(searchedId);	//associo l'indirizzo di memoria della cella dell'elemento con id cercato, se non trovato associo NULL
-			if(pId == NULL){	//controllo se l'id esiste o meno
-				printf("L'Id: %hu non presente\n", searchedId);
-			}else{
-				rmvElemByAdr(pId);	//rimuovo l'elemento
-			}
-		}else
-			puts("Errore: Non ci sono elemeti nella lista\n");
-	}
-
-	//Prestito di un libro con un dato ID
-	void copyOut(unsigned short searchedId){
-		//printf("-CopyOut-\n");
-		if(getPBookList()->pFirst != NULL){	//controllo se la lista è vuota
-			sCell *pAppoggio = getAdrsFromID(searchedId);	//associo l'indirizzo della cella dell'elemento di ID cercato
-			if(pAppoggio != NULL){	//verifico se l'id è stato trovato
-				if((pAppoggio->book)->inLibrary > 0){	//verifico che ci siano ancora copie in libreria
-					(pAppoggio->book)->inLibrary--;		//sottraggo un libro dalle copie rimanenti in libreria
-					(pAppoggio->book)->outLibrary++;	//aggiungo un libro nelle copie prestate
-					puts("Operazione eseguita con successo\n");
-				}else
-					puts("Non ci sono più copie a disposizione\n");
-			}else
-				puts("Non ci sono libri con questo ID\n");
-		}else
-			puts("Errore: Non ci sono elemeti nella lista\n");
-	}
-
-	//Rientro di un libro con un dato ID
-	void copyIn(unsigned short searchedId){
-		//printf("-CopyIn-\n");
-		if(getPBookList()->pFirst != NULL){	//controllo se la lista è vuota
-			sCell *pAppoggio = getAdrsFromID(searchedId);	//associo l'indirizzo della cella dell'elemento di ID cercato
-			if(pAppoggio != NULL){	//verifico se l'id è stato trovato
-				if((pAppoggio->book)->inLibrary + 1<=(pAppoggio->book)->inLibrary + (pAppoggio->book)->outLibrary){	//controllo che non si possano ritirare piu' libri di quelli prestati
-					(pAppoggio->book)->inLibrary++;	//reinserisco un libro in libreria
-					(pAppoggio->book)->outLibrary--;	//sottraggo un libro da quelli prestati
-					puts("Operazione eseguita con successo\n");
-				}else
-					puts("Le copie prestate per questo libro sono già rientrate tutte\n");
-			}else
-				puts("Non ci sono libri con questo ID\n");
-		}else
-			puts("Errore: Non ci sono elemeti nella lista\n");
-	}
-
-	//Stampa tutti i campi di un dato Libro passatogli l'ID come parametro
-	void printElem(unsigned short searchedId){
-		//printf("-PrintElem-\n");
-		if(getPBookList()->pFirst != NULL){		//controllo se la lista è vuota
-			sCell *pAppoggio = getAdrsFromID(searchedId);		//associo l'indirizzo della cella dell'elemento di ID cercato
-			printElemByAdr(pAppoggio);	//stampo l'elemento tramite la funzione apposita
-		}else
-			puts("Errore: Non ci sono elemeti nella lista\n");
-	}
-
-	//Stampa di (tutti i campi di) tutta la lista
-	void printList(){
-		//printf("-PrintList-\n");
-		if(getPBookList()->pFirst != NULL){	//controllo se la lista è vuota
-			sCell *pAppoggio = getPBookList()->pFirst;
-			while(pAppoggio != NULL){
-				printElemByAdr(pAppoggio);	//stampo l'elemento corrente tramite l'apposita funzione
-				pAppoggio = pAppoggio->pNext;	//scorro la lista
-			}
-		}else
-			puts("Errore: Non ci sono elemeti nella lista\n");
-	}
-
-
-	/**funzione per cercare un libro tramite l'ID
-	 *	Return:
-	 *	0 - elemento non trovato
-	 *	1 - elemento trovato
-	**/
-	int searchId(unsigned short searchedId){
-		//printf("-SearchId-\n");
-		if(getPBookList()->pFirst != NULL){	//controllo se esiste almeno un elemento nella lista
-			sCell *pAppoggio = (getPBookList()->pFirst);	//Variabile di appoggio, utilizzata per scorrere la lista
-			//scorro tutta la lista finchè non arrivo all'ultimo elemento o non trovo un ID uguale
-			while(pAppoggio != NULL){
-				if(((pAppoggio->book)->id) == searchedId){
-					return 1;
-				}
-				pAppoggio = pAppoggio->pNext;	//scorro la lista
-			}
-		}else
-			puts("Errore: Non ci sono elemeti nella lista\n");
-		return 0;
-	}
-
-
-	//Stampare tutti i libri della lista con un dato genere (e.g., thriller ) passato dall’utente
-	void printAllByGenre(){
-		//printf("-PrintAllByGenre-\n");
-		if(getPBookList()->pFirst != NULL){	//controllo che la lista non sia vuota
-			eGenre genre = selectGenere();	//scelgo il genere
-			//scorro tutta la lista e stampo tutti i libri aventi quel dato genere
-			sCell *pAppoggio = getPBookList()->pFirst;
-			while(pAppoggio != NULL){
-				if((pAppoggio->book)->genre == genre){
-					printElemByAdr(pAppoggio);
-					pAppoggio = pAppoggio->pNext;
-				}
-			}
-		}else
-			puts("Errore: Non ci sono elemeti nella lista\n");
-	}
-
-	//Ordinamento della lista con ID crescente
-	void orderListId(){
-		//printf("-orderListId-\n");
-		if(getPBookList()->pFirst != NULL){
-			if(getPBookList()->pFirst->pNext !=NULL){
-				sCell *p1WhileAppoggio = getPBookList()->pFirst,	//Variabile per lo scorrimento della lista
-					  *p2WhileAppoggio = getPBookList()->pFirst;	//Variabile per lo scorrimento della lista
-
-				//bubble sort
-				while(p1WhileAppoggio != NULL){
-					while(p2WhileAppoggio !=NULL){
-						if(p1WhileAppoggio->book->id > p2WhileAppoggio->book->id){	//verifico se esistono id maggiori e in caso li scambio di posto per ordinarli
-							swapBook(p1WhileAppoggio, p2WhileAppoggio);	//scambio
-						}
-						p2WhileAppoggio = p2WhileAppoggio->pNext;	//passo all'elemento successivo del ciclo interno
-					}
-					p2WhileAppoggio = p1WhileAppoggio->pNext;	//passo all'elemento successivo del ciclo esterno
-					p1WhileAppoggio = p1WhileAppoggio->pNext;	//passo all'elemento successivo del ciclo esterno
-				}
-				puts("Lista ordinata con ID Crecente\n");
-			}else
-				puts("C'e' un solo elemento nella lista, quindi e' ordinata\n");
-		}else
-			puts("Errore: Non ci sono elemeti nella lista\n");
-	}
-	
-	
-	void orderListTitle(){
-		//printf("-orderListTitle-\n");
-		if(getPBookList()->pFirst != NULL){	//controllo che la lista non sia vuota
-			if(getPBookList()->pFirst->pNext !=NULL){	//controllo che l'elemento della lista non sia l'unico
-				sCell *p1WhileAppoggio = getPBookList()->pFirst,	//Variabile per lo scorrimento della lista
-					  *p2WhileAppoggio = getPBookList()->pFirst;	//Variabile per lo scorrimento della lista
+  int tt, tm,x=0;
+  short int ts;		
 				
-				//bobbleSort
-				while(p1WhileAppoggio != NULL){	//scorro la lista
-					while(p2WhileAppoggio !=NULL){	//scorro la lista
-						char titolo1[strlen(p1WhileAppoggio->book->title)], titolo2[strlen(p2WhileAppoggio->book->title)];
-						stringToLowerCase(p1WhileAppoggio->book->title, titolo1);	//converto il titolo in minuscolo e lo metto nella variabile titolo1
-						stringToLowerCase(p2WhileAppoggio->book->title, titolo2);	//converto il titolo in minuscolo e lo metto nella variabile titolo2
-						if(strcmp(titolo1, titolo2)>0){	//comparo i due titoli(tramite strcmp) precedentemente convertiti ambedue in minuscolo
-							swapBook(p1WhileAppoggio, p2WhileAppoggio);	//richiamo la funzione swapBook per scambiare di posto ai due libri
-						}
-						p2WhileAppoggio = p2WhileAppoggio->pNext;	//passo all'elemento successivo del ciclo interno
-					}
-					p2WhileAppoggio = p1WhileAppoggio->pNext;	//passo all'elemento successivo del ciclo esterno
-					p1WhileAppoggio = p1WhileAppoggio->pNext;	//passo all'elemento successivo del ciclo esterno
-				}
-				puts("Lista ordinata in ordine Alfabetico\n");
-			}else
-				puts("C'e' un solo elemento nella lista, quindi e' ordinata\n");
-		}else
-			puts("Errore: Non ci sono elemeti nella lista\n");
+  do{
+    printf("Che Terra vuoi inserire?\n");
+    printf("0)Deserto\n");
+    printf("1)Foresta\n");
+    printf("2)Palude\n");
+    printf("3)Villaggio\n");
+    printf("4)Pianura\n");
+    scanf("%d", &tt);
+    if(tt>4){
+      printf("Hai sbagliato comando\n");
+    }
+    else{
+      x++;
+    }
+  }while(x==0);
+  x=0;
+  
+  if(head!=NULL){
+    if(tt!=3){
+      do{
+	printf("Che mostro vuoi inserire?\n");
+	printf("0)Nessuno\n");
+	printf("1)Scheletro\n");
+	printf("2)Lupo\n");
+	printf("3)Orco\n");
+	printf("4)Drago\n");
+	
+	scanf("%d", &tm);
+	if(tm>4){
+	  printf("Hai sbagliato comando\n");
+	}
+	else if(tm==1 && tt==2){
+	  printf("Lo scheletro non può stare su una palude\n");
+	}
+	else if(tm==3 && tt==0){
+	  printf("L'orco non può stare su un deserto\n");
+	}
+	else if((tm==2 && tt!=1)&&(tm==2 && tt!=4)){
+	  printf("Il lupo può stare solo sulla foresta o sulla pianura\n");
+	}
+	else{
+	  x++;
+	}
+      }while(x==0);
+    }
+    else{
+      tm=0;
+    }
+  }
+  else{
+    tm=0;
+  }
+  x=0;
+  do{
+    printf("Quanto oro vuoi inserire in questa terra? N.B. Il massimo è 200, per i villaggi 10\n");
+    scanf("%hd", &ts);
+    if(ts>10 && tt==3){
+      printf("Il tesoro è troppo grande\n"); 
+    }
+    else if(ts>200){
+      printf("Il tesoro è troppo grande!\n");
+    }
+    else{
+      x++;
+    }
+  }while(x==0);			
+  x=0;
+  
+  if(head==NULL){
+    head =  malloc(sizeof(struct Terra));
+    head->Tipo_terra = tt;
+    head->Tipo_mostro= tm;
+    head->tesoro = ts;
+    head->next = NULL;
+  }
+  else{	
+    struct Terra *lastland = head;
+    while(lastland->next != NULL){
+      lastland = lastland ->next;
+    }
+    lastland->next = malloc(sizeof(struct Terra));	
+    lastland->next->Tipo_terra = tt;
+    lastland->next->Tipo_mostro= tm;
+    lastland->next->tesoro = ts;
+    lastland->next->next = NULL;
+  }
+}
+
+void canc_terra(){
+  
+  if(head == NULL){
+    printf("Non c'è nessuna terra in memoria.\n");
+  }
+  
+  else if(head->next == NULL){
+    free(head);
+    head=NULL;
+  }
+
+  else{
+    struct Terra *current = head;
+    while(current->next->next != NULL){ //arriva in fondo alla lista
+      current = current->next;
+    }
+
+    free(current->next);
+    current->next = NULL;
+  }
+}
+
+
+void stampa_percorso(){
+	
+  struct Terra *pp = head;
+   
+  if(pp == NULL){
+    printf("Non hai creato nessuna Terra\n");
+  }
+  
+  else{
+	
+    do{
+	int c=1;
+
+	printf("La terra n %d è", &c);
+	
+	switch(pp->Tipo_terra){
+
+	case 0:{
+		printf(" un deserto");
+		break;}
+
+	case 1:{
+		printf(" una foresta");
+		break;}
+
+	case 2:{
+		printf(" una palude");
+		break;}
+
+	case 3:{
+		printf(" un villaggio");
+		break;}
+
+	case 4:{
+		printf(" una pianura");
+		break;}
+	}
+
+
+	switch(pp->Tipo_mostro){
+
+	case 0:{
+		printf(" in cui non è presente nessun mostro.");
+		break;}
+
+	case 1:{
+		printf(" in cui è presente un ostile scheletro.");
+		break;}
+
+	case 2:{
+		printf(" dove girovaga un lupo affamato.");
+		break;}
+
+	case 3:{
+		printf(" dove abita un possente orco.");
+		break;}
+
+	case 4:{
+		printf(" dove riposa un 'amichevole' drago.");
+		break;}
+	}
+
+	printf("\n Questa Terra contiene %hd monete d'oro.\n", &pp->tesoro); 
+
+      	pp = pp->next;
+	c++;
+
+    }while(pp != NULL);
+  } 
+}
+
+
+void termina_gioco(){
+  while(head!=NULL){
+    if(head->next == NULL){
+      free(head);
+      head=NULL;
+    }
+    
+    else{
+      struct Terra *current = head;
+      while(current->next->next != NULL){ //arriva in fondo alla lista
+	current = current->next;
+      }
+      
+      free(current->next);
+      current->next = NULL;
+    }
+  }
+
+void muovi_Oberon(){
+	
+	//inserire il controllo se il percorso è stato chiuso
+
+	struct Oberon Oberon {10, 5, 2, 1};  //Definisci Oberon con il tipo struttura Oberon
+
+	//stampa su schermo il tipo di terra e il mostro che contiene
+	printf("Ti trovi");
+	
+	switch(px->Tipo_terra){
+
+	case 0:{
+		printf(" in un deserto");
+		break;}
+
+	case 1:{
+		printf(" in una foresta");
+		break;}
+
+	case 2:{
+		printf(" in una palude");
+		break;}
+
+	case 3:{
+		printf(" in un villaggio");
+		break;}
+
+	case 4:{
+		printf(" in una pianura");
+		break;}
+	}
+
+
+	switch(px->Tipo_mostro){
+
+	case 0:{
+		printf(" in cui non è presente nessun mostro.");
+		break;}
+
+	case 1:{
+		printf(" dove uno scheletro ti guarda in modo ostile.");
+		break;}
+
+	case 2:{
+		printf(" dove un famelico lupo sta cacciando.");
+		break;}
+
+	case 3:{
+		printf(" in cui un possente orco è a guardia della sua casa.");
+		break;}
+
+	case 4:{
+		printf(" dove un drago custodisce il suo tesoro.");
+		break;}
+	}
+
+	printf("Che cosa vuoi fare?");
+	printf("1) Avanza 2) Combatti 3) Usa una pozione 4) Prendi tesoro 5) Distruggi Terra");
+	int a, g;
+	scanf("%d", &a);
+	
+	do{switch(a){
+	
+	case 1:{
+		avanza();
+		break;}
+
+	case 2:{
+		combatti();
+		break;}
+
+	case 3:{
+		usa_pozione();
+		break;}
+
+	case 4:{
+		prendi_tesoro();
+		break;}
+
+	case 5:{
+		distruggi_terra();
+		break;}
+
+	default:{ 
+		printf("Il comando che hai inserito non può essere accettato.\n");
+		g=1;
+		break;}
+	}
+	}while(g==1)
+		
+}
+
+void avanza(){
+	//controlli, se mostro drago e non è stato sconfitto, se è l'ultima terra
+	px = px->next;
+	muovi_oberon();}
+
+void combatti(){
+	
+	if(px->Tipo_mostro == 0){
+		printf("Non c'è nessun mostro da combattere\n");
+		}
+	
+	else{
+
+	int atk, atkm, pf; //Variabili per attacco di Oberon, attacco del Mostro, punti ferita del mostro
+
+	switch(px->Tipo_mostro){               //determina i punti ferita del mostro
+	
+	case 1:{
+		pf=2;
+		break;}
+
+	case 2:{
+		pf=1;
+		break;}
+
+	case 3:{
+		pf=3;
+		break;}
+
+	case 4:{
+		pf=5;
+		break;}
+	}
+
+	time_t t;
+	srand((unsigned) time(&t));
+	
+	atk = rand()%100;
+
+	if(atk>=60){
+		pf-=3;
+	          }
+
+	if(pv<=0){
+		printf("Hai sconfitto il mostro.\n");
+		pf->tm = 0;
+		muovi_oberon();
+	        }
+
+	atkm = rand()%100;
+
+	if(atkm>=50){
+		Oberon.punti_ferita -= pf;
+		}
+	
+
+	if(Oberon.punti_ferita<=0){                             //controlla che Oberon sia vivo
+		
+		int f, t;
+		printf("Oberon è morto. Hai perso. Cosa ti aspettavi?\n\n");
+		printf("Vuoi riprovare?\n");
+		printf("1)Si 2)No\n");
+
+		scanf("%d", &f);
+		
+		do{
+		switch(f){
+	
+		case 1:{
+			px = head;
+			Muovi_Oberon();
+			break;}
+
+		case 2:{
+			termina_gioco();
+			break;}
+
+		default:{
+			printf("Hai inserito un comando sbagliato.\n");
+			t=0}
+		
+		}while(t==0)
+		}
+
+	muovi_Oberon();
 	}
 	
-	//rimuove tutti i libri che iniziano con un determinato carattere passatogli dall'utente
-	void rmvTitleChar(){
-		//printf("-rmvTitleChar-\n");
-		if(getPBookList()->pFirst != NULL){	//verifico che la lista non sia vuota
-			char c;	//variabile di appoggio per scegliere il carattere
-			puts("Inserisci il carattere iniziale dei libri che vuoi eliminare\n");
-			scanf("\n%1[^\n]%*[^\n]",&c);
-			//Scorro tutta la lista
-			sCell *pAppoggio = getPBookList()->pFirst;
-			//scorro tutta la lista
-			while(pAppoggio != NULL){
-				if(tolower((pAppoggio->book)->title[0]) == tolower(c)){	//comparo la prima lettera del titolo del libro con il carattere inserito, per sicurezza li trasformo ambedue in minuscolo prima di compararli
-					rmvElemByAdr(pAppoggio);	//rimuovo l'elemento
-				}
-				pAppoggio = pAppoggio->pNext;	//scorro la lista
-			}
-			printf("Elementi che iniziano con %c rimossi con successo\n",c);
-		}else
-			puts("Errore: Non ci sono elemeti nella lista\n");
+void usa_pozione(){
+	
+	if(Oberon.pozione_guaritrice>0){
+		Oberon.pozione_guaritrice -=1;
+		Oberon.punti_ferita =5;
+		printf("Hai bevuto una pozione e ristabilito i tuoi punti ferita a 5.\n");}
+		
+	else{
+		printf("Non hai più pozioni da usare.\n");}
+
+	muovi_Oberon;
 	}
+
+void prendi_tesoro(){
+
+	if(px->tesoro>0){
+		Oberon.borsa_oro += px->tesoro;
+		if(Oberon.borsa_oro>=500){
+			Oberon.borsa_oro=500;}
+		printf("Hai raccolto il tesoro. Ora hai %d oro.\n", Oberon.borsa_oro);
+		}
+	else{
+		printf("Hai già raccolto il tesoro presente in questa terra.\n");}
+
+	muovi_Oberon();}
+		 
