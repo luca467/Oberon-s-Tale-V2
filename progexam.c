@@ -10,8 +10,10 @@ int main(){
   
   int a;
   int b=0;
-  do{
+  do{ 
+    static int c=0;
     
+    if(c==0){
     printf("\n");
     printf("     *  *    *   *  |///////////////////////////////////////////////////////////////|    *   *   *     *  \n");		
     printf("   *     *      *   |//----------------MAGO OBERON CALZINO BUCATO-----------------\\\\|      *  *     *     \n");
@@ -19,6 +21,8 @@ int main(){
     printf("     *     *     *  |//varie terre, con lo scopo di farlo arrivare sano e salvo a \\\\|    *      *         \n");
     printf(" *      *     *     |//casa.                                                      \\\\|      *   *     *    \n");
     printf("    *     *      *  |///////////////////////////////////////////////////////////////|    *    *   *       \n");
+    ++c;}
+
     printf("\n");
     printf(" __________________________________________________\n");
     printf("|                                                  |\n");
@@ -47,6 +51,7 @@ int main(){
 	printf("|averli sopraffatti. Il Master deve tenere in considerazione che la prima terra non                   |\n");
 	printf("|può contenere alcun mostro e che i villaggi non possono nascondere un tesoro più                     |\n");
 	printf("|grande di dieci monete d'oro, ma in compenso in essi non si può annidare nessun mostro.              |\n");
+	printf("|                                                                                                     |\n");
 	printf("|                                                                                                     |\n");
 	printf("|L'altro giocatore sarà invece Oberon, che a percorso completato potrà iniziare la sua avventura.     |\n");
 	printf("|Avrà a sua disposizione due incantesimi che permettono di liberarsi immediatamente del mostro,       |\n");
