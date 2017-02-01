@@ -77,7 +77,7 @@ void ins_terra(){
     printf("4)Pianura\n");
     scanf("%d", &tt);
     
-    if(tt>4){
+    if(tt>4 || tt<0){
       printf("Hai sbagliato comando\n");
     }
     else{
@@ -87,7 +87,7 @@ void ins_terra(){
   x=0;
   
   if(head!=NULL){
-    if(tt!=3){
+    if(tt!=3 || tt==0){
       do{
 	printf("Che mostro vuoi inserire?\n");
 	printf("0)Nessuno\n");
@@ -261,7 +261,7 @@ void stampa_percorso(){
 		break;}
 	}
 
-	printf("\n Questa Terra contiene %hd monete d'oro.\n", pp->tesoro); 
+	printf("\nQuesta Terra contiene %hd monete d'oro.\n\n", pp->tesoro); 
 
       	pp = pp->next;
 	c++;
@@ -286,6 +286,7 @@ void termina_gioco(){
       
       free(current->next);
       current->next = NULL;
+      exit(EXIT_FAILURE);
     }
   }
 }
@@ -300,7 +301,7 @@ void muovi_Oberon(){
 	//inserire il controllo se il percorso è stato chiuso
 
 	//stampa su schermo il tipo di terra e il mostro che contiene
-	printf("Ti trovi");
+	printf("\nTi trovi");
 	
 	switch(px->Tipo_terra){
 
@@ -396,9 +397,10 @@ void avanza(){
 		
 	if(px->next==NULL){
 	
-	printf("Hai vinto! Incredibile, non me lo sarei mai aspettato da te.\n");}
+	printf("Hai vinto! Incredibile, non me lo sarei mai aspettato da te.\n");
+	termina_gioco();}
 
-	px = px->next;
+	px=px->next;
 	muovi_Oberon();}
 
 void combatti(){
@@ -429,7 +431,7 @@ void combatti(){
 		pf=5;
 		break;}
 	}
-	}
+	
 
 	time_t t;
 	srand((unsigned)time(&t));
@@ -437,50 +439,46 @@ void combatti(){
 	atk = rand()%100;
 
 	if(atk>=60){
+		printf(" ______________________________________________________________________________________\n");
+		printf("|                                                                                      |\n");
+		printf("| Hai messo a segno il tuo attacco!                                                    |\n");
+		printf("|                                                                                      |\n");
 		pf-=3;
-	          }
+	        }
+	else{
+		printf(" _____________________________________________________________________________________\n");
+		printf("|                                                                                     |\n");
+		printf("| Il tuo attacco non è andato a segno.                                                |\n");
+		printf("|                                                                                     |\n");
+		}
 
 	if(pf<=0){
-		printf("Hai sconfitto il mostro.\n");
+		printf("| Hai sconfitto il mostro.                                                            |\n");
+		printf("|_____________________________________________________________________________________|\n");
 		px->Tipo_mostro = 0;
 		muovi_Oberon();
 	        }
 
 	atkm = rand()%100;
 
-	if(atkm>=50){
+	if(atkm>=50){		
 		Oberon.punti_ferita -= pf;
+		printf("| Il mostro ti ha colpito e ti ha inflitto %d danni. Ora hai %d punti ferita            |\n", pf, Oberon.punti_ferita);
+		printf("|_____________________________________________________________________________________|\n");
 		}
-	
+	else{
+		printf("| Il mostro ha mancato il suo attacco.                                                |\n");
+		printf("|_____________________________________________________________________________________|\n");}
 
 	if(Oberon.punti_ferita<=0){                             //controlla che Oberon sia vivo
 		
-		int f, t;
-		printf("Oberon è morto. Hai perso. Cosa ti aspettavi?\n\n");
-		printf("Vuoi riprovare?\n");
-		printf("1)Si 2)No\n");
-
-		scanf("%d", &f);
+		printf("|                                                                                     |\n");
+		printf("| Oberon è morto. Hai perso. Cosa ti aspettavi?                                       |\n");
+		printf("|_____________________________________________________________________________________|\n");
 		
-		do{
-		switch(f){
-	
-		case 1:{
-			px = head;
-			muovi_Oberon();
-			break;}
-
-		case 2:{
-			termina_gioco();
-			break;}
-
-		default:{
-			printf("Hai inserito un comando sbagliato.\n");
-			t=0;}
-		}		
-		}while(t==0);
-		}
-
+		termina_gioco();
+	}
+	}
 	muovi_Oberon();
 	}
 	
@@ -499,15 +497,27 @@ void usa_pozione(){
 
 void prendi_tesoro(){
 
-	if(px->tesoro>0){
-		Oberon.borsa_oro += px->tesoro;
-		if(Oberon.borsa_oro>=500){
-			Oberon.borsa_oro=500;}
-		printf("Hai raccolto il tesoro. Ora hai %d oro.\n", Oberon.borsa_oro);
-		}
+	if(px->Tipo_mostro != 0){
+		printf("Non puoi prendere il tesoro senza aver sconfitto il mostro\n");}
+
 	else{
-		printf("Hai già raccolto il tesoro presente in questa terra.\n");}
+		if(px->tesoro>0){
+			Oberon.borsa_oro += px->tesoro;
+			px->tesoro=0;
+			
+			if(Oberon.borsa_oro>=500){
+			Oberon.borsa_oro=500;
+			printf("Ricorda che l'oro che trasporti non può essere maggiore di 500\n");}
+			
+			printf("Hai raccolto il tesoro. Ora hai %d oro.\n", Oberon.borsa_oro);
+			}
+		else{
+			printf("Hai già raccolto il tesoro presente in questa terra.\n");}
+			}
 
 	muovi_Oberon();
 	}
 		 
+
+
+
