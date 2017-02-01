@@ -165,7 +165,6 @@ else{
 }
 
 
-
 void canc_terra(){
 
 	if(w==0){
@@ -448,7 +447,7 @@ void combatti(){
 
 	if(px->Tipo_mostro == 0){
 		printf("Non c'è nessun mostro da combattere\n");
-		}
+		muovi_Oberon();}
 	
 	else{
 
