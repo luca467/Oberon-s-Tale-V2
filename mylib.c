@@ -42,8 +42,11 @@ void crea_percorso(){
       }
 
       case 4:{
+	if(w!=1){
 	w=1;
-	printf("Il percorso è stato chiuso. Ora Oberon può giocare.\n");
+	printf("Il percorso è stato chiuso. Ora Oberon può giocare.\n");}
+	else{
+	printf("Hai già chiuso il percorso\n");}
 	break;
       }
 
@@ -53,10 +56,10 @@ void crea_percorso(){
       }
 
       default:{
-        printf("Hai inserito un comando sbagliato .-.\n");
+        printf("Hai inserito un comando sbagliato.\n");
         break;
       }
-    };
+    }
   }while(x==0);
 }
 
@@ -285,13 +288,17 @@ void termina_gioco(){
       
       free(current->next);
       current->next = NULL;
-      exit(EXIT_FAILURE);
+      
     }
   }
+ exit(EXIT_FAILURE);
 }
 
 void muovi_Oberon(){
+	if(w==0){
+	printf("Non puoi muovere Oberon. Prima il percorso deve essere chiuso.\n");}
 	
+	else{
 	static int c=0;
 	if(c==0){
 		px = head;
@@ -373,7 +380,7 @@ void muovi_Oberon(){
 		break;}
 
 	case 5:{
-		//distruggi_terra();
+		distruggi_terra();
 		printf("scocciaterra.\n");
 		break;}
 
@@ -385,6 +392,7 @@ void muovi_Oberon(){
 	}while(g==1);
 		
 }
+}
 
 void avanza(){
 	
@@ -394,15 +402,15 @@ void avanza(){
 	
 	muovi_Oberon();}
 		
-	else if(px->next==NULL){
+	if(px->next==NULL){
 	
 	printf("Hai vinto! Incredibile, non me lo sarei mai aspettato da te.\n");
 	termina_gioco();}
 
-	else{
+
 	px=px->next;
 	muovi_Oberon();
-}
+
 
 }
 
@@ -440,6 +448,27 @@ void usa_pozione(){
 	else{
 		printf("Non hai più pozioni da usare.\n");}
 	}
+
+void usa_incantesimo(){
+	if(Oberon.incantesimi==0){
+		printf("Non hai più incantesimi disponibili\n");}
+	else{
+		Oberon.incantesimi-=1;
+		printf("Abracadabra, OcusPocus! Bibidi, Bodibi, Bu! Insomma, il mostro si dissolve in un mucchieto di ceneri\n");
+		px->Tipo_mostro=0;}
+	}
+
+void distruggi_terra(){
+	if(px->next==NULL){
+		printf("Hai distrutto la tua dimora. Piangi sconsolato mentre guardi la tua riserva di ippograsso scorrere via.\n");
+		termina_gioco();}
+	
+	free(px->next);
+	px->next = px->next->next;
+	printf("Con il tuo potente sortilegio hai completamente distrutto la terra successiva.\n");
+	muovi_Oberon();}
+
+		
 
 void combatti(){
 	
@@ -533,8 +562,8 @@ void combatti(){
 		break;}
 
 	case 3:{
-		//usa_incantesimo
-		printf("Incantesimo\n");
+		usa_incantesimo();
+		ww=1;
 		break;}
 
 	default:{
@@ -544,7 +573,3 @@ void combatti(){
 	}while(ww != 1);
 	muovi_Oberon();
 	}}
-	
-
-
-
