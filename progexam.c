@@ -58,7 +58,7 @@ int main(){
 	printf("|una pozione che gli permette di riportare al massimo i suoi punti vita (che partono da 5), e un      |\n");
 	printf("|potente sortilegio, utilizzabile una sola volta, che gli permette di distruggere la terra successiva |\n");
 	printf("|a quella in cui si trova. Per combattere dovrà invece affidarsi alla sua vecchia spada.              |\n");
-	printf("|Combattere non è obbligatorio, a meno di che non si tratti di un drago, ma in ogni caso se non       |\n");
+	printf("|Combattere non è obbligatorio, a meno che non si tratti di un drago, ma in ogni caso se non       |\n");
 	printf("|si sconfigge il mostro non si potrà accedere al tesoro che protegge.                                 |\n");
 	printf("|                                                                                                     |\n");
 	printf("|Buon Viaggio, Oberon! Non ti fermerà nessuno, se non la cara vecchia morte!                          |\n");

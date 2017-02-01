@@ -395,13 +395,52 @@ void avanza(){
 	
 	muovi_Oberon();}
 		
-	if(px->next==NULL){
+	else if(px->next==NULL){
 	
 	printf("Hai vinto! Incredibile, non me lo sarei mai aspettato da te.\n");
 	termina_gioco();}
 
+	else{
 	px=px->next;
+	muovi_Oberon();
+}
+
+}
+
+void prendi_tesoro(){
+
+	if(px->Tipo_mostro != 0){
+		printf("Non puoi prendere il tesoro senza aver sconfitto il mostro\n");}
+
+	else{
+		if(px->tesoro>0){
+			Oberon.borsa_oro += px->tesoro;
+			px->tesoro=0;
+			
+			if(Oberon.borsa_oro>=500){
+			Oberon.borsa_oro=500;
+			printf("Ricorda che l'oro che trasporti non può essere maggiore di 500\n");}
+			
+			printf("Hai raccolto il tesoro. Ora hai %d oro.\n", Oberon.borsa_oro);
+			}
+		else{
+			printf("Hai già raccolto il tesoro presente in questa terra.\n");}
+			
+		}
+
 	muovi_Oberon();}
+
+
+void usa_pozione(){
+	
+	if(Oberon.pozione_guaritrice>0){
+		Oberon.pozione_guaritrice -=1;
+		Oberon.punti_ferita =5;
+		printf("Hai bevuto una pozione e ristabilito i tuoi punti ferita a 5.\n");}
+		
+	else{
+		printf("Non hai più pozioni da usare.\n");}
+	}
 
 void combatti(){
 	
@@ -431,8 +470,16 @@ void combatti(){
 		pf=5;
 		break;}
 	}
+	int pfa = pf;
+	int ww=0;
+	do{
+	int gg;
+	printf("Cosa vuoi fare?\n");
+	printf("1) Attacca 2) Usa pozione 3) Usa Incantesimo\n");
+	scanf("%d", &gg);
 	
-
+	switch(gg){
+	case 1:{
 	time_t t;
 	srand((unsigned)time(&t));
 	
@@ -443,7 +490,7 @@ void combatti(){
 		printf("|                                                                                      |\n");
 		printf("| Hai messo a segno il tuo attacco!                                                    |\n");
 		printf("|                                                                                      |\n");
-		pf-=3;
+		pfa-=3;
 	        }
 	else{
 		printf(" _____________________________________________________________________________________\n");
@@ -452,72 +499,53 @@ void combatti(){
 		printf("|                                                                                     |\n");
 		}
 
-	if(pf<=0){
+	if(pfa<=0){
 		printf("| Hai sconfitto il mostro.                                                            |\n");
 		printf("|_____________________________________________________________________________________|\n");
 		px->Tipo_mostro = 0;
-		muovi_Oberon();
+		ww=1;
 	        }
-
-	atkm = rand()%100;
-
-	if(atkm>=50){		
-		Oberon.punti_ferita -= pf;
-		printf("| Il mostro ti ha colpito e ti ha inflitto %d danni. Ora hai %d punti ferita            |\n", pf, Oberon.punti_ferita);
-		printf("|_____________________________________________________________________________________|\n");
-		}
 	else{
-		printf("| Il mostro ha mancato il suo attacco.                                                |\n");
-		printf("|_____________________________________________________________________________________|\n");}
+		atkm = rand()%100;
 
-	if(Oberon.punti_ferita<=0){                             //controlla che Oberon sia vivo
-		
-		printf("|                                                                                     |\n");
-		printf("| Oberon è morto. Hai perso. Cosa ti aspettavi?                                       |\n");
-		printf("|_____________________________________________________________________________________|\n");
-		
-		termina_gioco();
-	}
-	}
-	muovi_Oberon();
-	}
-	
-void usa_pozione(){
-	
-	if(Oberon.pozione_guaritrice>0){
-		Oberon.pozione_guaritrice -=1;
-		Oberon.punti_ferita =5;
-		printf("Hai bevuto una pozione e ristabilito i tuoi punti ferita a 5.\n");}
-		
-	else{
-		printf("Non hai più pozioni da usare.\n");}
-
-	muovi_Oberon();
-	}
-
-void prendi_tesoro(){
-
-	if(px->Tipo_mostro != 0){
-		printf("Non puoi prendere il tesoro senza aver sconfitto il mostro\n");}
-
-	else{
-		if(px->tesoro>0){
-			Oberon.borsa_oro += px->tesoro;
-			px->tesoro=0;
-			
-			if(Oberon.borsa_oro>=500){
-			Oberon.borsa_oro=500;
-			printf("Ricorda che l'oro che trasporti non può essere maggiore di 500\n");}
-			
-			printf("Hai raccolto il tesoro. Ora hai %d oro.\n", Oberon.borsa_oro);
+		if(atkm>=50){		
+			Oberon.punti_ferita -= pf;
+			printf("| Il mostro ti ha colpito e ti ha inflitto %d danni. Ora hai %d punti ferita            |\n", pf, Oberon.punti_ferita);
+			printf("|_____________________________________________________________________________________|\n");
 			}
 		else{
-			printf("Hai già raccolto il tesoro presente in questa terra.\n");}
-			}
+			printf("| Il mostro ha mancato il suo attacco.                                                |\n");
+			printf("|_____________________________________________________________________________________|\n");}
 
-	muovi_Oberon();
+		if(Oberon.punti_ferita<=0){                             //controlla che Oberon sia vivo
+			
+			printf("|                                                                                     |\n");
+			printf("| Oberon è morto. Hai perso. Cosa ti aspettavi?                                       |\n");
+			printf("|_____________________________________________________________________________________|\n");
+		
+			termina_gioco();
+
+		}
 	}
-		 
+		break;}
+	
+	case 2:{
+		usa_pozione();
+		break;}
+
+	case 3:{
+		//usa_incantesimo
+		printf("Incantesimo\n");
+		break;}
+
+	default:{
+		printf("Comando sbagliato\n");
+		}
+	}
+	}while(ww != 1);
+	muovi_Oberon();
+	}}
+	
 
 
 

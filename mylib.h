@@ -36,7 +36,6 @@ enum Tipo_mostro {
   drago
 };
 
-
 //Definisco la struttura per le terre
 struct Terra {
   int Tipo_terra;
@@ -44,3 +43,5 @@ struct Terra {
   short tesoro;
   struct Terra* next;
 };
+
+	
