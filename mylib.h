@@ -11,6 +11,8 @@ void combatti();
 void usa_pozione();
 void prendi_tesoro();
 void distruggi_terra();
+void negozio();
+int attacca(int pfa,int pf);
 
 //Definisco la struttura per il personaggio Oberon
 struct Oberon {

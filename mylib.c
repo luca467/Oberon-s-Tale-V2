@@ -10,6 +10,7 @@ static struct Terra *lastland = NULL;
 static struct Terra *px = NULL;
 static int w=0;
 static struct Oberon Oberon = {10, 5, 2, 1};  //Definisci Oberon con il tipo struttura Oberon
+static int dt=1;
 
 void crea_percorso(){
   int t,x=0;
@@ -377,50 +378,268 @@ void muovi_Oberon(){
 	int a, g;
 
 	do{
-	printf("Che cosa vuoi fare?\n");
-	printf("1) Avanza 2) Combatti 3) Usa una pozione 4) Prendi tesoro 5) Distruggi Terra\n");
-	
-	scanf("%d", &a);
-	
-	switch(a){
+	  
+	  printf("Che cosa vuoi fare?\n");
+	  if(px->Tipo_terra==3){
+	    printf("1) Avanza 2) Negozio 3) Usa una pozione 4) Prendi tesoro 5) Distruggi Terra\n");
+	  
+	    scanf("%d", &a);
 	    
-	  case 1:{
-	    avanza();
-	    break;
-	  }
-
-	  case 2:{
-	    combatti();
-	    break;
-	  }
-
-	  case 3:{
-	    usa_pozione();
+	    switch(a){
+	      
+	    case 1:{
+	      avanza();
+	      break;
+	    }
+	      
+	    case 2:{
+	      negozio();
+	      break;
+	    }
+	      
+	    case 3:{
+	      usa_pozione();
+	      g=1;
+	      break;
+	    }
+	      
+	    case 4:{
+	      prendi_tesoro();
 	    g=1;
 	    break;
+	    }
+	      
+	    case 5:{
+	      distruggi_terra();
+	      printf("scocciaterra.\n");
+	      break;
+	    }
+	      
+	    default:{ 
+	      printf("Il comando che hai inserito non può essere accettato.\n");
+	      g=1;
+	      break;
+	    }
+	    }
 	  }
-
-	  case 4:{
-	    prendi_tesoro();
-	    g=1;
-	    break;
+	  
+	  else{
+	    printf("1) Avanza 2) Combatti 3) Usa una pozione 4) Prendi tesoro 5) Distruggi Terra\n");
+	    
+	    scanf("%d", &a);
+	    
+	    switch(a){
+	      
+	    case 1:{
+	      avanza();
+	      break;
+	    }
+	      
+	    case 2:{
+	      combatti();
+	      break;
+	    }
+	      
+	    case 3:{
+	      usa_pozione();
+	      g=1;
+	      break;
+	    }
+	      
+	    case 4:{
+	      prendi_tesoro();
+	      g=1;
+	      break;
 	  }
-
-	  case 5:{
-	    distruggi_terra();
-	    printf("scocciaterra.\n");
-	    break;
+	      
+	    case 5:{
+	      distruggi_terra();
+	      break;
+	    }
+	      
+	    default:{ 
+	      printf("Il comando che hai inserito non può essere accettato.\n");
+	      g=1;
+	      break;
+	    }
+	    }  
 	  }
-
-	  default:{ 
-	    printf("Il comando che hai inserito non può essere accettato.\n");
-	    g=1;
-	    break;
-	  }
-	  }
+	  
 	}while(g==1);
 	
   }
+}
+
+void negozio(){
+  
+  int r, jj=0; //variabili che gestiscono lo switch e il do-while
+  
+  do{	
+    
+    if(Oberon.borsa_oro==42){
+      printf("\nBenvenuto al mercato nero dei goblin del villaggio.\n");
+      printf("Cosa vuoi acquistare?\n");
+      printf("1) Incantesimo, costa 120  2) Pozione, costa 90. 3) 42, è la risposta a tutto! 4) Esci dal negozio\n");
+      
+      scanf("%d", &r);
+      
+      switch(r){
+	
+      case 1:{
+	
+	if(80<Oberon.borsa_oro&&Oberon.borsa_oro<120){
+	  
+	  printf("Hai un bel gruzzolo, ma non basta per questo raro incantesimo.\n");
+	}
+	
+	if(40<Oberon.borsa_oro&&Oberon.borsa_oro<=80){
+	  
+	  printf("Non siamo in vena di sconti...\n");
+	}
+	
+	if(0<=Oberon.borsa_oro&&Oberon.borsa_oro<=40){
+	  
+	  printf("Non hai il becco di un quattrino! Pensavi di fregarmi?\n");
+	}
+	
+	if(Oberon.borsa_oro>=120){
+	  
+	  Oberon.borsa_oro-=120;
+	  
+	  Oberon.incantesimi++;
+	  
+	  printf("Un incantesimo? Ottimo acquisto! E' un piacere fare affari con te!\n");
+	}
+	
+	break;
+      }
+	
+      case 2:{
+	
+	if(60<Oberon.borsa_oro&&Oberon.borsa_oro<90){
+	  
+	  printf("Questo elisir vale più di quello che hai, amico.\n");
+	}
+      
+	if(30<Oberon.borsa_oro&&Oberon.borsa_oro<=60){
+	
+	  printf("Non facciamo sconti su articoli del genere...\n");
+	}
+	
+	if(0<=Oberon.borsa_oro&&Oberon.borsa_oro<=30){
+	  
+	  printf("Vedo che sei al verde... Non che mi aspettassi altro, da un viandante come te.\n");
+	}
+	
+	if(Oberon.borsa_oro>=90){
+	  
+	  Oberon.borsa_oro-=90;
+	  
+	  Oberon.pozione_guaritrice++;
+	  
+	  printf("Ecco a te una pozione guaritrice: usala con saggezza...\n");
+	}
+	
+	break;
+      }
+	
+      case 3:{
+	printf("Ti teletrasporti davanti al tuo castello.\nIl tuo maggiordomo Marvin ti accoglie dicendoti che il tuo castello verrà distrutto per fa posto a un'autostrada galattica.\n");
+	termina_gioco();
+	break;
+      }
+      case 4:{
+	muovi_Oberon();
+	break;
+      }
+      default:{
+	
+	printf("Comando sbagliato.\n");
+	
+	break;
+      }
+	
+      }
+    }
+    else{
+      printf("\nBenvenuto al mercato nero dei goblin del villaggio.\n");
+      printf("Cosa vuoi acquistare?\n");
+      printf("1) Incantesimo, costa 120  2) Pozione, costa 90. 3)Esci dal negozio\n");
+      
+      scanf("%d", &r);
+      
+      switch(r){
+	
+      case 1:{
+	
+	if(80<Oberon.borsa_oro&&Oberon.borsa_oro<120){
+	  
+	  printf("Hai un bel gruzzolo, ma non basta per questo raro incantesimo.\n");
+	}
+	
+	if(40<Oberon.borsa_oro&&Oberon.borsa_oro<=80){
+	  
+	  printf("Non siamo in vena di sconti...\n");
+      }
+	
+	if(0<=Oberon.borsa_oro&&Oberon.borsa_oro<=40){
+	  
+	  printf("Non hai il becco di un quattrino! Pensavi di fregarmi?\n");
+	}
+	
+	if(Oberon.borsa_oro>=120){
+	  
+	  Oberon.borsa_oro-=120;
+	
+	  Oberon.incantesimi++;
+	  
+	  printf("Un incantesimo? Ottimo acquisto! E' un piacere fare affari con te!\n");
+	}
+	
+	break;}
+	
+      case 2:{
+	
+	if(60<Oberon.borsa_oro&&Oberon.borsa_oro<90){
+	  
+	  printf("Questo elisir vale più di quello che hai, amico.\n");
+	}
+	
+      if(30<Oberon.borsa_oro&&Oberon.borsa_oro<=60){
+	
+	printf("Non facciamo sconti su articoli del genere...\n");
+      }
+      
+      if(0<=Oberon.borsa_oro&&Oberon.borsa_oro<=30){
+	
+	printf("Vedo che sei al verde... Non che mi aspettassi altro, da un viandante come te.\n");
+      }
+      
+      if(Oberon.borsa_oro>=90){
+	
+	Oberon.borsa_oro-=90;
+	
+	Oberon.pozione_guaritrice++;
+	
+	printf("Ecco a te una pozione guaritrice: usala con saggezza...\n");
+      }
+      
+      break;}
+	
+      case 3:{
+	
+	muovi_Oberon();
+	
+	break;}
+      
+      default:{
+	
+	printf("Comando sbagliato.\n");
+	
+	break;}
+      }
+    }
+  }while(jj==0);
 }
 
 void avanza(){
@@ -493,15 +712,21 @@ void usa_incantesimo(){
 }
 
 void distruggi_terra(){
-  if(px->next==NULL){
-    printf("Hai distrutto la tua dimora. Piangi sconsolato mentre guardi la tua riserva di ippograsso scorrere via.\n");
-    termina_gioco();
+  if(dt==0){
+    printf("Non puoi più lanciare il sortilegio, la magia ha sempre un prezzo...\n");
   }
-  
-  free(px->next);
-  px->next = px->next->next;
-  printf("Con il tuo potente sortilegio hai completamente distrutto la terra successiva.\n");
-  muovi_Oberon();
+  else{
+    if(px->next==NULL){
+      printf("Hai distrutto la tua dimora. Piangi sconsolato mentre guardi la tua riserva di ippograsso scorrere via.\n");
+      termina_gioco();
+    }
+    
+    free(px->next);
+    px->next = px->next->next;
+    printf("Con il tuo potente sortilegio hai completamente distrutto la terra successiva.\n");
+    dt--;
+    muovi_Oberon();
+  }
 }
 
 int attacca(int pfa, int pf){
