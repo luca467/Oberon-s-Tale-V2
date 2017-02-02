@@ -121,14 +121,17 @@ void ins_terra(){
       printf("Quanto oro vuoi inserire in questa terra? N.B. Il massimo è 200, per i villaggi 10\n");
       scanf("%hd", &ts);
       if(ts>10 && tt==3){
-	printf("Il tesoro è troppo grande\n"); 
+	printf("Il tesoro è troppo grande!\n"); 
+    }
+      else if(ts<0){
+	printf("Il tesoro non può essere minore a 0!\n");
     }
       else if(ts>200){
 	printf("Il tesoro è troppo grande!\n");
-      }
+    }
       else{
 	x++;
-      }
+    }
     }while(x==0);			
     x=0;
     
@@ -298,6 +301,10 @@ void muovi_Oberon(){
   if(w==0){
     printf("Non puoi muovere Oberon. Prima il percorso deve essere chiuso.\n");}
   
+  if(head==NULL){
+	printf("Hai vinto. Certo non è stato difficile, ma hai comunque raggiunto la tua meta!\n");
+	termina_gioco();}
+  
   else{
 	static int c=0;
 	if(c==0){
@@ -366,13 +373,16 @@ void muovi_Oberon(){
 	  break;
 	}
 	}
-	
+
+	int a, g;
+
+	do{
 	printf("Che cosa vuoi fare?\n");
 	printf("1) Avanza 2) Combatti 3) Usa una pozione 4) Prendi tesoro 5) Distruggi Terra\n");
-	int a, g;
+	
 	scanf("%d", &a);
 	
-	do{switch(a){
+	switch(a){
 	    
 	  case 1:{
 	    avanza();
@@ -386,11 +396,13 @@ void muovi_Oberon(){
 
 	  case 3:{
 	    usa_pozione();
+	    g=1;
 	    break;
 	  }
 
 	  case 4:{
 	    prendi_tesoro();
+	    g=1;
 	    break;
 	  }
 
@@ -450,11 +462,8 @@ void prendi_tesoro(){
     }
     else{
       printf("Hai già raccolto il tesoro presente in questa terra.\n");
-    }
-    
+    }   
   }
-  
-  muovi_Oberon();
 }
 
 
@@ -545,10 +554,10 @@ void combatti(){
 	atk = rand()%100;
 	
 	if(atk>=60){
-	  printf(" ______________________________________________________________________________________\n");
-	  printf("|                                                                                      |\n");
-	  printf("| Hai messo a segno il tuo attacco!                                                    |\n");
-	  printf("|                                                                                      |\n");
+	  printf(" _____________________________________________________________________________________\n");
+	  printf("|                                                                                     |\n");
+	  printf("| Hai messo a segno il tuo attacco!                                                   |\n");
+	  printf("|                                                                                     |\n");
 	  pfa-=3;
 	}
 	else{
