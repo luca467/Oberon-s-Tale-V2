@@ -13,15 +13,15 @@ int main(){
     static int c=0;
     
     if(c==0){
-    printf("\n");
-    printf("     *  *    *   *  |///////////////////////////////////////////////////////////////|    *   *   *     *  \n");		
-    printf("   *     *      *   |//----------------MAGO OBERON CALZINO BUCATO-----------------\\\\|      *  *     *     \n");
-    printf("  *     *     *   * |//In questo gioco si dovrà condurre il Mago Oberon attraverso\\\\|   *     *     *     \n");
-    printf("     *     *     *  |//varie terre, con lo scopo di farlo arrivare sano e salvo a \\\\|    *      *         \n");
-    printf(" *      *     *     |//casa.                                                      \\\\|      *   *     *    \n");
-    printf("    *     *      *  |///////////////////////////////////////////////////////////////|    *    *   *       \n");
-    ++c;}
-
+      printf("\n");
+      printf("     *  *    *   *  |///////////////////////////////////////////////////////////////|    *   *   *     *  \n");		
+      printf("   *     *      *   |//----------------MAGO OBERON CALZINO BUCATO-----------------\\\\|      *  *     *     \n");
+      printf("  *     *     *   * |//In questo gioco si dovrà condurre il Mago Oberon attraverso\\\\|   *     *     *     \n");
+      printf("     *     *     *  |//varie terre, con lo scopo di farlo arrivare sano e salvo a \\\\|    *      *         \n");
+      printf(" *      *     *     |//casa.                                                      \\\\|      *   *     *    \n");
+      printf("    *     *      *  |///////////////////////////////////////////////////////////////|    *    *   *       \n");
+      ++c;}
+    
     printf("\n");
     printf(" __________________________________________________\n");
     printf("|                                                  |\n");
@@ -37,11 +37,11 @@ int main(){
     printf("| 4)Termina Gioco.                                 |\n");
     printf("|__________________________________________________|\n");
     
-    	
+    
     fgets(input, 100, stdin);
     t=atoi(input);
     switch (t){
-	
+      
       case 1:{
 	printf(" _____________________________________________________________________________________________________\n");
 	printf("|TUTORIAL                                                                                             |\n");

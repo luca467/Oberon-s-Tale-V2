@@ -432,14 +432,15 @@ void avanza(){
     muovi_Oberon();
   }
   
-  if(px->next==NULL){
+  else if(px->next==NULL){
     
     printf("Hai vinto! Incredibile, non me lo sarei mai aspettato da te.\n");
-    termina_gioco();}
-  
-  
-  px=px->next;
-  muovi_Oberon();
+    termina_gioco();
+  }
+  else{
+    px=px->next;
+    muovi_Oberon();
+  }
 }
 
 void prendi_tesoro(){
@@ -503,11 +504,59 @@ void distruggi_terra(){
   muovi_Oberon();
 }
 
-		
+int attacca(int pfa, int pf){
+  int atk, atkm;
+  time_t t;
+  srand((unsigned)time(&t));
+  
+  atk = rand()%100;
+  
+  if(atk>=60){
+    printf(" _____________________________________________________________________________________\n");
+    printf("|                                                                                     |\n");
+    printf("| Hai messo a segno il tuo attacco!                                                   |\n");
+    printf("|                                                                                     |\n");
+    pfa-=3;
+  }
+  else{
+    printf(" _____________________________________________________________________________________\n");
+    printf("|                                                                                     |\n");
+    printf("| Il tuo attacco non è andato a segno.                                                |\n");
+    printf("|                                                                                     |\n");
+  }
+  
+  if(pfa<=0){
+    printf("| Hai sconfitto il mostro.                                                            |\n");
+    printf("|_____________________________________________________________________________________|\n");
+    px->Tipo_mostro = 0;
+  }
+  else{
+    atkm = rand()%100;
+    
+    if(atkm>=50){		
+      Oberon.punti_ferita -= pf;
+      printf("| Il mostro ti ha colpito e ti ha inflitto %d danni. Ora hai %d punti ferita            |\n", pf, Oberon.punti_ferita);
+      printf("|_____________________________________________________________________________________|\n");
+    }
+    else{
+      printf("| Il mostro ha mancato il suo attacco.                                                |\n");
+      printf("|_____________________________________________________________________________________|\n");}
+    
+    if(Oberon.punti_ferita<=0){                             //controlla che Oberon sia vivo
+      
+      printf("|                                                                                     |\n");
+      printf("| Oberon è morto. Hai perso. Cosa ti aspettavi?                                       |\n");
+      printf("|_____________________________________________________________________________________|\n");
+      
+      termina_gioco();  
+    }
+  }
+  return pfa;
+}		
 
 void combatti(){
   
-  int atk, atkm, pf; //Variabili per attacco di Oberon, attacco del Mostro, punti ferita del mostro
+  int pf; //Variabili per attacco di Oberon, attacco del Mostro, punti ferita del mostro
   
   if(px->Tipo_mostro == 0){
     printf("Non c'è nessun mostro da combattere\n");
@@ -548,51 +597,9 @@ void combatti(){
       
       switch(gg){
       case 1:{
-	time_t t;
-	srand((unsigned)time(&t));
-	
-	atk = rand()%100;
-	
-	if(atk>=60){
-	  printf(" _____________________________________________________________________________________\n");
-	  printf("|                                                                                     |\n");
-	  printf("| Hai messo a segno il tuo attacco!                                                   |\n");
-	  printf("|                                                                                     |\n");
-	  pfa-=3;
-	}
-	else{
-	  printf(" _____________________________________________________________________________________\n");
-	  printf("|                                                                                     |\n");
-	  printf("| Il tuo attacco non è andato a segno.                                                |\n");
-	  printf("|                                                                                     |\n");
-	}
-	
+	pfa=attacca(pfa,pf);
 	if(pfa<=0){
-	  printf("| Hai sconfitto il mostro.                                                            |\n");
-	  printf("|_____________________________________________________________________________________|\n");
-	  px->Tipo_mostro = 0;
 	  ww=1;
-	}
-	else{
-	  atkm = rand()%100;
-	  
-	  if(atkm>=50){		
-	    Oberon.punti_ferita -= pf;
-	    printf("| Il mostro ti ha colpito e ti ha inflitto %d danni. Ora hai %d punti ferita            |\n", pf, Oberon.punti_ferita);
-	    printf("|_____________________________________________________________________________________|\n");
-	  }
-	  else{
-	    printf("| Il mostro ha mancato il suo attacco.                                                |\n");
-	    printf("|_____________________________________________________________________________________|\n");}
-	  
-	  if(Oberon.punti_ferita<=0){                             //controlla che Oberon sia vivo
-			
-	    printf("|                                                                                     |\n");
-	    printf("| Oberon è morto. Hai perso. Cosa ti aspettavi?                                       |\n");
-	    printf("|_____________________________________________________________________________________|\n");
-	    
-	    termina_gioco();  
-	  }
 	}
 	break;
       }
