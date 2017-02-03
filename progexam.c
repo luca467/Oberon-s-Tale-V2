@@ -80,7 +80,6 @@ int main(){
       }
       
       case 4:{
-        printf("Cattivone! Te ne vai di già... :(\n");
 	termina_gioco();
         break;
       }
